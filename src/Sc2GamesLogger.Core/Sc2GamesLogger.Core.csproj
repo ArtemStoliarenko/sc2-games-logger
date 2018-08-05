@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Sc2ApiUpdater">
+      <HintPath>..\..\..\sc2-client-api-updater\src\Sc2ApiUpdater\bin\Release\netstandard2.0\Sc2ApiUpdater.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

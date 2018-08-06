@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <Reference Include="Sc2ApiUpdater">
-      <HintPath>..\..\..\sc2-client-api-updater\src\Sc2ApiUpdater\bin\Release\netstandard2.0\Sc2ApiUpdater.dll</HintPath>
+      <HintPath>..\..\..\sc2-client-api-updater\src\Sc2ApiUpdater\bin\Debug\netstandard2.0\Sc2ApiUpdater.dll</HintPath>
     </Reference>
   </ItemGroup>
 

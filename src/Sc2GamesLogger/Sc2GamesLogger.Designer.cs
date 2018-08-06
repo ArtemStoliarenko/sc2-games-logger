@@ -31,6 +31,7 @@
         {
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // btnStart
@@ -45,6 +46,7 @@
             // 
             // btnStop
             // 
+            this.btnStop.Enabled = false;
             this.btnStop.Location = new System.Drawing.Point(134, 13);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
@@ -52,6 +54,10 @@
             this.btnStop.Text = "Stop logging";
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // sfd
+            // 
+            this.sfd.Filter = "Text files|*.txt";
             // 
             // Sc2GamesLogger
             // 
@@ -70,6 +76,7 @@
 
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.SaveFileDialog sfd;
     }
 }
 

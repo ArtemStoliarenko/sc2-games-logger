@@ -15,7 +15,7 @@ namespace Sc2GamesLogger.Core
 
         public static string Format(GameData gameData, TimeSpan? endTime)
         {
-            if (gameData.GameObject == null)
+            if (gameData.GameObject == null || gameData.GameObject?.Players?.Length == 0)
                 return null;
 
             TimeSpan formattedStartTime = gameData.StartTime.Ticks >= 0 ? gameData.StartTime : TimeSpan.Zero;

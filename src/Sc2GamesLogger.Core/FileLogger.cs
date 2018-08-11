@@ -37,13 +37,13 @@ namespace Sc2GamesLogger.Core
             this.streamWriter = new StreamWriter(path, true);
             this.streamWriterLock = new object();
 
-            this.current = new GameData(TimeSpan.Zero, null);
+            this.current = new GameData(null, TimeSpan.Zero);
         }
 
         public void Start()
         {
             startTime = DateTime.UtcNow;
-            current = new GameData(TimeSpan.Zero, null);
+            current = new GameData(null, TimeSpan.Zero);
             apiUpdater.Start();
         }
 
@@ -66,7 +66,7 @@ namespace Sc2GamesLogger.Core
         {
             TimeSpan currentTimeSpan = DateTime.UtcNow - startTime;
             WriteGameToFile(newGameObject, currentTimeSpan);
-            current = new GameData(currentTimeSpan, newGameObject);
+            current = new GameData(newGameObject, currentTimeSpan);
         }
 
         private void WriteGameToFile(GameObject newGameObject, TimeSpan currentTimeSpan)
@@ -76,7 +76,7 @@ namespace Sc2GamesLogger.Core
             {
                 lock (streamWriterLock)
                 {
-                    streamWriter.WriteLine();
+                    streamWriter.WriteLine(formattedGame);
                     streamWriter.Flush();
                 }
             }

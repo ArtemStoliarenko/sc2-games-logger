@@ -11,18 +11,29 @@ namespace Sc2GamesLogger
 
         private const string timeoutConfigKey = "Timeout";
 
+        private const string timerFormat = @"hh\:mm\:ss";
+
+        private const string defaultTimerValue = "00:00:00";
+
+        private static readonly TimeSpan timerIncrement = TimeSpan.FromSeconds(1);
+
         private FileLogger fileLogger;
+
+        private TimeSpan timerTime;
+
+        private bool LoggingEnabled => btnStop.Enabled;
 
         public Sc2GamesLogger()
         {
             InitializeComponent();
+            this.ActiveControl = null;
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                ChangeButtonsState(true);
+                ChangeState(true);
 
                 string path = sfd.FileName;
                 int period = int.Parse(ConfigurationManager.AppSettings[peridodConfigKey]);
@@ -37,13 +48,27 @@ namespace Sc2GamesLogger
         private void btnStop_Click(object sender, EventArgs e)
         {
             fileLogger.Stop();
-            ChangeButtonsState(false);
+            ChangeState(false);
         }
 
-        private void ChangeButtonsState(bool loggingEnabled)
+        private void ChangeState(bool loggingEnabled)
         {
             btnStart.Enabled = !loggingEnabled;
             btnStop.Enabled = loggingEnabled;
+            textboxTimer.Enabled = loggingEnabled;
+
+            if (loggingEnabled)
+            {
+                timerTime = TimeSpan.Zero;
+                tbTimer.Text = defaultTimerValue;
+                this.ActiveControl = null;
+            }
+        }
+
+        private void timerText_Tick(object sender, EventArgs e)
+        {
+            timerTime += timerIncrement;
+            tbTimer.Text = timerTime.ToString(timerFormat);
         }
     }
 }

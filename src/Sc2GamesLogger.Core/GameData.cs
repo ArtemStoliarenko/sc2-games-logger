@@ -5,11 +5,11 @@ namespace Sc2GamesLogger.Core
 {
     internal struct GameData
     {
-        public TimeSpan StartTime { get; }
-
         public GameObject GameObject { get; }
 
-        public GameData(TimeSpan startTime, GameObject gameObject)
+        public TimeSpan StartTime { get; }
+
+        public GameData(GameObject gameObject, TimeSpan startTime)
         {
             this.GameObject = gameObject;
             if (GameObject != null)

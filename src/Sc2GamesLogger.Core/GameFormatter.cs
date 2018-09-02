@@ -27,12 +27,6 @@ namespace Sc2GamesLogger.Core
                 gameData.GameObject.IsReplay ? replayString : string.Empty);
         }
 
-        private static string FormatPlayer(Player player)
-        {
-            if (player == null)
-                throw new ArgumentNullException(nameof(player));
-
-            return string.Format(playerFormat, player.Name, Char.ToUpper(player.Race[0]));
-        }
+        private static string FormatPlayer(Player player) => string.Format(playerFormat, player.Name, Char.ToUpper(player.Race[0]));
     }
 }

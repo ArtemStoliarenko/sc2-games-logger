@@ -12,7 +12,7 @@ namespace Sc2GamesLogger.Core
 
         private readonly StreamWriter streamWriter;
 
-        private readonly object streamWriterLock;
+        private readonly object updateCurrentObjectLock;
 
         private DateTime startTime;
 
@@ -35,7 +35,7 @@ namespace Sc2GamesLogger.Core
             apiUpdater.GameChanged += GameChangedHandler;
 
             this.streamWriter = new StreamWriter(path, true);
-            this.streamWriterLock = new object();
+            this.updateCurrentObjectLock = new object();
 
             this.current = new GameData(null, TimeSpan.Zero);
         }
@@ -65,8 +65,12 @@ namespace Sc2GamesLogger.Core
         private void GameChangedHandler(object sender, GameObject newGameObject)
         {
             TimeSpan currentTimeSpan = DateTime.UtcNow - startTime;
-            WriteGameToFile(newGameObject, currentTimeSpan);
-            current = new GameData(newGameObject, currentTimeSpan);
+
+            lock (updateCurrentObjectLock)
+            {
+                WriteGameToFile(newGameObject, currentTimeSpan);
+                current = new GameData(newGameObject, currentTimeSpan);
+            }
         }
 
         private void WriteGameToFile(GameObject newGameObject, TimeSpan currentTimeSpan)
@@ -74,26 +78,38 @@ namespace Sc2GamesLogger.Core
             string formattedGame = GetFormattedGame(newGameObject, currentTimeSpan);
             if (formattedGame != null)
             {
-                lock (streamWriterLock)
-                {
-                    streamWriter.WriteLine(formattedGame);
-                    streamWriter.Flush();
-                }
+                streamWriter.WriteLine(formattedGame);
+                streamWriter.Flush();
             }
         }
 
         private string GetFormattedGame(GameObject newGameObject, TimeSpan currentTimeSpan)
         {
-            if (newGameObject != null &&
-                newGameObject.Players?.Length > 0 &&
-                !newGameObject.Players[0].Result.Equals(undecidedResult, StringComparison.OrdinalIgnoreCase))
+            if (!HasGameEnded(current.GameObject))
             {
-                return GameFormatter.Format(current, null);
+                if (HasGameEnded(newGameObject))
+                {
+                    return GameFormatter.Format(current, GetEndTime(newGameObject.DisplayTime));
+                }
+                else
+                {
+                    return GameFormatter.Format(current, currentTimeSpan);
+                }
             }
             else
             {
-                return GameFormatter.Format(current, currentTimeSpan);
+                return null;
             }
         }
+
+        private TimeSpan GetEndTime(double displayTime) => current.StartTime + TimeSpan.FromSeconds(displayTime);
+
+        private static bool HasGameEnded(GameObject gameObject)
+        {
+            return IsCorrectGameObject(gameObject) &&
+                !undecidedResult.Equals(gameObject.Players[0].Result, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsCorrectGameObject(GameObject gameObject) => gameObject != null && gameObject.Players?.Length > 0;
     }
 }
